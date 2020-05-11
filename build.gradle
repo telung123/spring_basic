@@ -13,8 +13,12 @@ repositories {
 }
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-devtools')
+	implementation 'org.springframework.boot:spring-boot-devtools'
+	compileOnly 'org.projectlombok:lombok:1.18.10'
+	annotationProcessor 'org.projectlombok:lombok:1.18.10'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.10'
+	testCompileOnly 'org.projectlombok:lombok:1.18.10'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
