@@ -53,7 +53,8 @@ public class UserRepositoryTest extends StudyApplicationTests {
     @Transactional
     public void read(){ // Get method로 id 를 받음
         // findById Return : Optional의 Generic 으로 받게됨
-        Optional<User> user = userRepository.findById(2L);
+        //Optional<User> user = userRepository.findById(2L);
+        Optional<User> user = userRepository.findByAccount("tester02");
 
         // Optional 로 받아온 객체는 있을수도, 없을수도 있다고 가정.
         // 해서 'ifPresent' 로 객체가 있을 때만 값을 받아오게 처리
