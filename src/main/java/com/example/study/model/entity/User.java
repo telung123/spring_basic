@@ -4,11 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -27,4 +25,12 @@ public class User {
     private String createdBy;
     private LocalDateTime updatedAt;
     private String updatedBy;
+
+    // 1(자신) : N (OrderDetail)
+    // 다수이기 때문에 단수 객체가 아닌 List<T> 로 설정
+    // fetch type 설정,
+    // mappedBy = 어떤 컬럼(변수) 에 mapping 할지 설정.
+    // orderDetail 의 ManyToOne 으로 설정해준 변수와 동명이어야함.
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<OrderDetail> orderDetailList;
 }
