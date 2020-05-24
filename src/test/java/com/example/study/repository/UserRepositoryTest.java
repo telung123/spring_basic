@@ -2,19 +2,17 @@ package com.example.study.repository;
 
 
 import com.example.study.StudyApplicationTests;
-import com.example.study.model.entity.Item;
-import com.example.study.model.entity.OrderDetail;
 import com.example.study.model.entity.User;
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class UserRepositoryTest extends StudyApplicationTests {
@@ -31,41 +29,57 @@ public class UserRepositoryTest extends StudyApplicationTests {
 
     @Test // Test 코드는 반드시 Test annotation 추가
     public void create(){
-        /* 기존 SQL 방식으로 Data를 create 할때는 아래처럼 했음
-        String sql = insert into user(%s, %s, %d) value(account,email...);
-        JPA로는 Object 로 관리 하기 때문에 아래처럼 작성한다.
 
-        DI 의 핵심은 싱글톤패턴이기 때문에 User 는 DI로 관리하지 않는다.
-        * */
+        String account = "test3";
+        String password = "qwer1234";
+        String status = "REGISTERED";
+        String email = "telung123@naver.com";
+        String phoneNumber = "010-1234-3333";
+        LocalDateTime registeredAt = LocalDateTime.now();
+        LocalDateTime createdAt = LocalDateTime.now();
+        String createdBy = "AdminServer";
+
         User user = new User();
-        //user.setId(); -- AutoIncrease 설정했기 때문에 따로 set 하지 않음
-        user.setAccount("tester");
-        user.setEmail("tester@naver.com");
-        user.setPhoneNumber("010-4545-4789");
-        user.setCreatedAt(LocalDateTime.now()); // 현재시간
-        user.setCreatedBy("Gabin");
+        user.setAccount(account);
+        user.setPassword(password);
+        user.setStatus(status);
+        user.setEmail(email);
+        user.setPhoneNumber(phoneNumber);
+        user.setRegisteredAt(registeredAt);
 
-        User newUser = userRepository.save(user); // 반환값 User (동일)
-        System.out.println("newUser : " + newUser);
+
+        User newUser = userRepository.save(user);
+        Assertions.assertNotNull(newUser);
+        Assertions.assertEquals(newUser.getAccount(),account);
     }
 
     @Test
     @Transactional
     public void read(){ // Get method로 id 를 받음
-        // findById Return : Optional의 Generic 으로 받게됨
-        //Optional<User> user = userRepository.findById(2L);
-        Optional<User> user = userRepository.findByAccount("tester02");
-
-        // Optional 로 받아온 객체는 있을수도, 없을수도 있다고 가정.
-        // 해서 'ifPresent' 로 객체가 있을 때만 값을 받아오게 처리
-        user.ifPresent(selectUser ->{
-            selectUser.getOrderDetailList().stream().forEach(order -> {
-                Item item = order.getItem();
-                System.out.println(item);
+        String phoneNumber = "010-1234-1234";
+        User user = userRepository.findFirstByPhoneNumberOrderByIdDesc(phoneNumber);
+        if ( user != null ) {
+            user.getOrderGroupList().stream().forEach(orderGroup -> {
+                System.out.println("주문묶음------------------");
+                System.out.println("총금액 : " + orderGroup.getTotalPrice());
+                System.out.println("수령인 : " + orderGroup.getRevAddress());
+                System.out.println("수령인 : " + orderGroup.getRevName());
+                System.out.println();
+                System.out.println("주문상세------------------");
+                System.out.println();
+                orderGroup.getOrderDetailList().forEach(orderDetail -> {
+                    System.out.println("파트너사 이름: " + orderDetail.getItem().getPartner().getName());
+                    System.out.println("파트너사 카테고리 :" + orderDetail.getItem().getPartner().getCategory().getTitle());
+                    System.out.println("주문상태 : "+ orderDetail.getStatus());
+                    System.out.println("콜센터: "+orderDetail.getItem().getPartner().getCallCenter());
+                    System.out.println("도착예정일자 : "+ orderDetail.getArrivalDate());
+                    System.out.println("주문상품 : " + orderDetail.getItem().getName());
+                });
             });
-//            System.out.println("user : " + item);
-//            System.out.println("email : " + item.getEmail());
-        });
+        }
+
+        Assertions.assertNotNull(user);
+        Assertions.assertEquals(user.getPhoneNumber(),phoneNumber);
     }
 
     @Test

@@ -1,8 +1,12 @@
 package com.example.study.model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.Accessors;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,6 +16,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity // == table
+@ToString(exclude = {"orderGroupList"})
+@EntityListeners(AuditingEntityListener.class)
+@Builder
+@Accessors(chain = true)
 // @Table(name = "user") // class 명과 동일하기 때문에 생략
 public class User {
     @Id
@@ -27,17 +35,19 @@ public class User {
     private LocalDateTime registeredAt;
     private LocalDateTime unregisteredAt;
 
+    @CreatedDate
     private LocalDateTime createdAt;
+
+    @CreatedBy
     private String createdBy;
 
+    @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    @LastModifiedBy
     private String updatedBy;
 
-    // 1(자신) : N (OrderDetail)
-    // 다수이기 때문에 단수 객체가 아닌 List<T> 로 설정
-    // fetch type 설정,
-    // mappedBy = 어떤 컬럼(변수) 에 mapping 할지 설정.
-    // orderDetail 의 ManyToOne 으로 설정해준 변수와 동명이어야함.
+    // User1 : N OrderGroup
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<OrderGroup> orderGroupList;
 }

@@ -1,5 +1,6 @@
 package com.example.study.repository;
 
+import com.example.study.model.entity.Category;
 import com.example.study.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,8 +15,13 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
+    // findFirstBy - 같은 번호로 여러명이 가입 가능
+    // 가장 최근 1건 Return
+    // ID 역순 핸드폰번호
+    User findFirstByPhoneNumberOrderByIdDesc(String phoneNumber);
+
     // findByOOO - 조건. 아래는 account 로 찾음
     // select * from user where account = ? << test03, admin ...
-    Optional<User> findByAccount(String account);
-    Optional<User> findByEmail(String email);
+//    Optional<User> findByAccount(String account);
+//    Optional<User> findByEmail(String email);
 }
