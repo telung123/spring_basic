@@ -2,6 +2,7 @@ package com.example.study.repository;
 
 import com.example.study.StudyApplicationTests;
 import com.example.study.model.entity.Partner;
+import com.example.study.model.enumclass.PartnerStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class PartnerRepositoryTest extends StudyApplicationTests {
 
         Partner partner = new Partner();
         partner.setName(name);
-        partner.setStatus(status);
+        partner.setStatus(PartnerStatus.REGISTERED);
         partner.setAddress(address);
         partner.setCallCenter(callCenter);
         partner.setPartnerNumber(partnerNumber);

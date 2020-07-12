@@ -14,12 +14,9 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-public class ItemApiLogicService implements CrudInterface<ItemApiRequest, ItemApiResponse> {
+public class ItemApiLogicService extends BaseService<ItemApiRequest, ItemApiResponse, Item> {
     @Autowired
     private PartnerRepository partnerRepository;
-
-    @Autowired
-    private ItemRepository itemRepository;
 
     @Override
     public Header<ItemApiResponse> create(Header<ItemApiRequest> request) {
@@ -36,13 +33,13 @@ public class ItemApiLogicService implements CrudInterface<ItemApiRequest, ItemAp
             .partner(partnerRepository.getOne(body.getPartnerId()))
             .build();
 
-        Item newItem = itemRepository.save(item);
+        Item newItem = baseRepository.save(item);
         return response(newItem);
     }
 
     @Override
     public Header<ItemApiResponse> read(Long id) {
-        Optional<Item> optional = itemRepository.findById(id);
+        Optional<Item> optional = baseRepository.findById(id);
         return optional
                 .map(item-> response(item))
                 .orElseGet(()->Header.ERROR("아이템 없음"));
@@ -54,7 +51,7 @@ public class ItemApiLogicService implements CrudInterface<ItemApiRequest, ItemAp
         ItemApiRequest body = request.getData();
 
         // body에 선언된 ID로 row find
-        return itemRepository.findById(body.getId())
+        return baseRepository.findById(body.getId())
             .map(entityItem ->{ // id에 해당하는 item 이 있는 경우
                 entityItem
                         .setStatus(body.getStatus()) // body로 넘어온 data를 해당 id에 set해줌
@@ -66,18 +63,18 @@ public class ItemApiLogicService implements CrudInterface<ItemApiRequest, ItemAp
                         .setRegisteredAt(body.getRegisteredAt());
                 return entityItem; // 갱신된 Item 다시 return
             })
-            .map(newItem->itemRepository.save(newItem))
+            .map(newItem->baseRepository.save(newItem))
             .map(item-> response(item))
             .orElseGet(()->Header.ERROR("아이템 없음"));
     }
 
     @Override
     public Header delete(Long id) {
-        Optional<Item> optional = itemRepository.findById(id);
+        Optional<Item> optional = baseRepository.findById(id);
 
         return optional
             .map(item->{
-                itemRepository.delete(item);
+                baseRepository.delete(item);
                 return Header.OK(); // delete 는 return type 없기 때문에 Item을 반환하는게 아님
             })
             .orElseGet(()->Header.ERROR(""));

@@ -1,5 +1,6 @@
 package com.example.study.model.entity;
 
+import com.example.study.model.enumclass.UserStatus;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.CreatedBy;
@@ -28,7 +29,10 @@ public class User {
     // @Column(name = "account") // 컬럼명과 동일하면 생략 (다를경우 용이)
     private String account;
     private String password;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+
     private String email;
     private String phoneNumber; // column 명은 phone_number, java에선 카멜로 표기
 

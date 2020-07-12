@@ -20,8 +20,8 @@ public class ItemRepositoryTest extends StudyApplicationTests {
         Item item = new Item();
         item.setName("삼성노트북");
         item.setTitle("삼성노트북 A100");
-        item.setStatus("UNREGISTERED");
-        item.setPrice(100000);
+
+        //item.setPrice(100000);
 //        item.setPartnerId(1L);
 
 
